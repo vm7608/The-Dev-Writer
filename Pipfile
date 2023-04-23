@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+pillow = "*"
+django-ckeditor = "*"
+django-crispy-forms = "*"
+tzdata = "*"
+sqlparse = "*"
+asgiref = "*"
+crispy-bootstrap5 = "*"
+django-jazzmin = "*"
+
+[dev-packages]
+autopep8 = "*"
+
+[requires]
+python_version = "3.10"

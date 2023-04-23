@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block post_content %}
+<h2>Bạn đã đăng xuất!</h2>
+<div class="border-top pt-3">
+    <small class="text-muted">
+        <a href="{% url 'login' %}">
+            Đăng nhập trở lại
+        </a>
+    </small>
+</div>
+{% endblock post_content %}

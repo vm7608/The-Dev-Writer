@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block post_content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'article/home.css' %}">
+</head>
+    <h3 class="mb-3">Các bài viết của {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h3>
+    {% for post in posts %}
+    <article>
+        <header>
+            <h2>
+                <a href="{% url 'post-detail' post.id %}" class="post-title">
+                    {{ post.title }}
+                </a>
+            </h2>
+            <div class="entry-meta">
+                <span>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    {{ post.date_posted | date:"F d, Y" }}
+                </span>
+                <span>
+                    <i class="fa-solid fa-folder-open"></i>
+                    <a href="{% url 'topic-posts' post.topic.id %}" class="topic-link">
+                        {{ post.topic.name }}
+                    </a>
+                </span>
+                <span>
+                    <img class="rounded-circle account-img" src="{{ post.author.profile.avatar.url }}" alt="account-image">
+                    <a href="{% url 'user-posts' post.author.username %}" class="ms-auto">{{ post.author }}</a>
+                </span>
+            </div>
+        </header>
+        <div class="entry-content">
+            <img class="col-sm-4" src="{{ post.image.url }}" alt="image">
+            <div class="post-content">
+                <div class="truncate-content">
+                    {{ post.content|safe }}
+                </div>
+                <p>
+                    <button type="button" class="btn btn-light">
+                        <a href="{% url 'post-detail' post.id %}">
+                            Tiếp tục đọc
+                        </a>
+                    </button>
+                </p>
+            </div>
+        </div>
+    </article>
+        <hr class="section-divider">
+    </article>
+    {% endfor%}
+    {% if is_paginated %}
+
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">Trang đầu</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Trang trước</a>
+        {% endif%}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>  
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Trang tiếp</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Trang cuối</a>
+        {% endif%}
+
+    {% endif%}
+{% endblock post_content %}
+
+{% block topic_content %}
+    {% include 'topic/topic_sidebar.html' %}
+{% endblock topic_content %}

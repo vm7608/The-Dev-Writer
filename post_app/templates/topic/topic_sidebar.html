@@ -1,0 +1,10 @@
+<div class="content-section border p-3 rounded">
+    <h3>Chủ đề</h3>
+    {% for topic in topics %}
+        <a href="{% url 'topic-posts' topic.id %}" class="topic-link">
+            <div class="border-bottom w-100 p-3">
+                {{topic.name}}
+            </div>
+        </a>
+    {% endfor%}
+</div>

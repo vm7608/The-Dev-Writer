@@ -1,0 +1,25 @@
+.media {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.media img {
+	width: 100px;
+}
+
+.profile-form {
+	width: 60%;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.profile-form > * {
+	margin-bottom: 20px;
+}
+
+.profile-form > fieldset > * {
+	margin-bottom: 10px;
+}

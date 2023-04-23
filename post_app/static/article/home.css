@@ -1,0 +1,130 @@
+a,
+a:hover {
+    text-decoration: none;
+}
+
+article {
+    margin-bottom: 20px;
+}
+
+article header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 9px;
+}
+
+.post-title {
+    color: #444;
+    font-size: 1.6rem;
+}
+
+.post-title:hover {
+    color: #666;
+}
+
+.entry-meta span {
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+.entry-meta i {
+    font-size: 14px;
+    margin-right: 3px;
+    color: #cc0000;
+}
+
+.account-img {
+    height: 14px;
+    width: 14px;
+    margin-right: 3px;
+    border: #cc0000;
+}
+
+.truncate-content p:first-child {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+    text-align: justify;
+}
+
+.truncate-content p:not(:first-child) {
+    display: none;
+}
+
+.entry-content {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.post-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.post-content > * {
+    margin-bottom: 0;
+}
+
+.article-metadata a {
+    text-decoration: none;
+}
+
+.article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.article-content {
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.article-svg {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+/* .account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+} */
+
+.account-heading {
+    font-size: 2.5rem;
+}
+
+.text-muted {
+    color: #9e9e9e;
+}
+
+.author-name {
+    text-decoration: none;
+    color: rgba(var(--bs-body-color-rgb),.75)!important;
+}
+
+.btn:hover, .btn-check:active+.btn, .btn-check:checked+.btn, .btn.active, .btn.show, .btn.active, .btn:focus {
+    border: none;
+}
+
+.dropdown-item {
+    color: #000;
+}
+
+.topic-link div {
+    color: #1fa67a;
+}
+
+.topic-link:hover div {
+    color: #000 !important;
+}
+

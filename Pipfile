@@ -13,6 +13,7 @@ sqlparse = "*"
 asgiref = "*"
 crispy-bootstrap5 = "*"
 django-jazzmin = "*"
+pipreqs = "*"
 
 [dev-packages]
 autopep8 = "*"

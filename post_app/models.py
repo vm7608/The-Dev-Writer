@@ -40,3 +40,25 @@ class Post(models.Model):
             output_size = (850, 478)
             img.thumbnail(output_size)
             img.save(self.image.path)
+            
+    def is_saved_by(self, user):
+        return self.savepost_set.filter(user=user).exists()
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.content
+    
+
+class SavePost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_saved = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return self.post.title

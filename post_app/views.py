@@ -1,10 +1,16 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Post, Topic
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Post, Topic, Comment, SavePost
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+# import reverse_lazy to use in class based views
+from django.urls import reverse_lazy
+# import django messages
+from django.contrib import messages
 
 
 class HomeListView(ListView):
@@ -16,6 +22,17 @@ class HomeListView(ListView):
     queryset: Post.objects.all()
 
     def get_context_data(self, **kwargs):
+
+        # return posts by keyword
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET.get('keyword')
+            context = super(HomeListView, self).get_context_data(**kwargs)
+            context['posts'] = Post.objects.filter(
+                title__icontains=keyword).order_by('-date_posted')
+            context['topics'] = Topic.objects.all()
+            messages.success(self.request, f"Search result of '{keyword}'")
+            return context
+
         context = super(HomeListView, self).get_context_data(**kwargs)
         context['topics'] = Topic.objects.all()
 
@@ -34,10 +51,47 @@ class MyPostListView(ListView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        context = super(MyPostListView, self).get_context_data(**kwargs)
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET.get('keyword')
+            context = super(MyPostListView, self).get_context_data(**kwargs)
+            context['posts'] = Post.objects.filter(
+                title__icontains=keyword, author=user).order_by('-date_posted')
+            context['topics'] = Topic.objects.all()
+            messages.success(self.request, f"Search result of '{keyword}'")
 
+            return context
+
+        context = super(MyPostListView, self).get_context_data(**kwargs)
         context['posts'] = Post.objects.filter(
             author=user).order_by('-date_posted')
+        context['topics'] = Topic.objects.all()
+        return context
+
+class SavedPostListView(ListView):
+    model = SavePost
+    template_name = 'post/saved_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = self.request.user
+        return SavePost.objects.filter(user=user).order_by('-date_saved')
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET.get('keyword')
+            context = super(SavedPostListView, self).get_context_data(**kwargs)
+            temp = SavePost.objects.filter(
+                user=user, post__title__icontains=keyword).order_by('-date_saved')
+            context['posts'] = [post.post for post in temp]
+            context['topics'] = Topic.objects.all()
+            messages.success(self.request, f"Search result of '{keyword}'")
+            return context
+
+        context = super(SavedPostListView, self).get_context_data(**kwargs)
+        temp = SavePost.objects.filter(user=user).order_by('-date_saved')
+        context['posts'] = [post.post for post in temp]
         context['topics'] = Topic.objects.all()
         return context
 
@@ -54,8 +108,18 @@ class UserPostListView(ListView):
 
     def get_context_data(self, **kwargs):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
+        
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET.get('keyword')
+            
+            context = super(UserPostListView, self).get_context_data(**kwargs)
+            context['posts'] = Post.objects.filter(
+                author=user, title__icontains=keyword).order_by('-date_posted')
+            context['topics'] = Topic.objects.all()
+            messages.success(self.request, f"Search result of '{keyword}'")
+            return context
+        
         context = super(UserPostListView, self).get_context_data(**kwargs)
-
         context['posts'] = Post.objects.filter(
             author=user).order_by('-date_posted')
         context['topics'] = Topic.objects.all()
@@ -74,10 +138,20 @@ class TopicPostListView(ListView):
 
     def get_context_data(self, **kwargs):
         selected_topic = get_object_or_404(Topic, id=self.kwargs.get('pk'))
+        
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET.get('keyword')
+            context = super(TopicPostListView, self).get_context_data(**kwargs)
+            context['posts'] = Post.objects.filter(topic=selected_topic, title__icontains=keyword).order_by('-date_posted')
+            context['topics'] = Topic.objects.all()
+            context['selected_topic'] = selected_topic
+            messages.success(self.request, f"Search result of '{keyword}'")
+            return context
+        
+        
         context = super(TopicPostListView, self).get_context_data(**kwargs)
 
-        context['posts'] = Post.objects.filter(
-            topic=selected_topic).order_by('-date_posted')
+        context['posts'] = Post.objects.filter(topic=selected_topic).order_by('-date_posted')
         context['topics'] = Topic.objects.all()
         context['selected_topic'] = selected_topic
         return context
@@ -90,9 +164,60 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['topics'] = Topic.objects.all()
+        # context['comments'] = self.get_comments()
+        return context
+
+    def get_comments(self):
+        post = self.get_object()
+        return post.comments.all().order_by('-date_posted')
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+
+    def form_valid(self, form):
+        post_pk = self.kwargs['pk']
+        post = get_object_or_404(Post, pk=post_pk)
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.author = self.request.user
+        comment.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        post_pk = self.kwargs['pk']
+        return reverse_lazy('post-detail', kwargs={'pk': post_pk})
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentCreateView, self).get_context_data(**kwargs)
+        context['status'] = 'create'
         return context
 
 
+def comments_list(request):
+    postid = request.GET.get('post')
+    post = get_object_or_404(Post, id=postid)
+    comments = Comment.objects.filter(post =post).order_by('-date_posted')
+    context = {'comments': comments}
+    return render(request, 'comment/comment.html', context)
+
+
+
+def SavePostView(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    saved_post, created = SavePost.objects.get_or_create(
+        post=post, user=request.user)
+    if created:
+        # Nếu đây là lần đầu tiên người dùng lưu bài viết này
+        messages.success(request, f"Post '{post.title}' has been saved!")
+    else:
+        # Nếu người dùng đã lưu bài viết này trước đó
+        saved_post.delete()
+        messages.success(request, f"Post '{post.title}' has been unsaved!")
+    return redirect('post-detail', pk=post_id)
+
+# from django.core.management import call_command
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'post/form.html'
@@ -100,6 +225,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        # call_command('collectstatic', interactive=False)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

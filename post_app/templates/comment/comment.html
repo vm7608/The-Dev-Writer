@@ -1,0 +1,30 @@
+{% for comment in comments %}
+    <div class="row" id = "comment">
+        <div class="col-1">
+            <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid rounded-circle" alt="Profile Picture">
+        </div>
+        <div class="col-11">
+            <div class="row">
+                <div class="col-12">
+                    <a href="{% url 'user-posts' comment.author.username %}" class="ms-auto">{{ comment.author }}</a>
+                    <small> on {{ comment.date_posted | date:"F d, Y" }}</small>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    {{ comment.content }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- style for row to have line around -->
+    <style>
+        #comment {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <br>
+{% endfor %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from post_app.models import SavePost
 # Create your models here.
 
 
@@ -21,3 +22,10 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.avatar.path)
+            
+    # get all posts id from post_app.models.SavePost
+    def get_saved_posts(self):
+        temp = SavePost.objects.filter(user=self.user)
+        saved_posts = [post.post for post in temp]
+        print(saved_posts)
+        return saved_posts

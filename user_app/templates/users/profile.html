@@ -18,12 +18,12 @@
     <form action="" method="post" enctype="multipart/form-data" class="profile-form">
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mt-4 mb-2">Thông tin tài khoản</legend>
+            <h3 class="border-bottom mt-4 mb-2">Account profile</h3>
             {{ u_form|crispy }}
             {{ p_form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Sửa</button>
+            <button class="btn btn-outline-info" type="submit">Edit</button>
         </div>
     </form>
 </div>

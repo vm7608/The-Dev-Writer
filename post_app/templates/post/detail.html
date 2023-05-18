@@ -50,7 +50,7 @@
                 <span class="vote-span">
                     <span id="upvote" class="{% if user_voted == 'upvote' %}upvote{% endif %}">
                         <a href="#" data-post-id="{{ post.id }}" id="upvote-href">
-                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                            <i class="fa fas fa-arrow-up" aria-hidden="true"></i>
                         </a>
                     </span>
                     <span id="vote-count">
@@ -58,7 +58,7 @@
                     </span>
                     <span id="downvote" class="{% if user_voted == 'downvote' %}downvote{% endif %}">
                         <a href="#" data-post-id="{{ post.id }}" id="downvote-href">
-                            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                            <i class="fa fas fa-arrow-down" aria-hidden="true"></i>
                         </a>
                     </span>
                     {% csrf_token %}

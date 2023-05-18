@@ -128,3 +128,18 @@ article header {
     color: #000 !important;
 }
 
+.entry-meta .vote-span i {
+    cursor: pointer;
+    color: #000;
+    
+}
+
+.entry-meta .vote-span .upvote i {
+    cursor: pointer;
+    color: #cc0000;
+}
+
+.entry-meta .vote-span .downvote i {
+    cursor: pointer;
+    color: #7193ff;
+}

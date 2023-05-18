@@ -40,7 +40,7 @@
                 <span class="vote-span">
                     <span id="upvote" class="{% if user_voted|get_value:post.id == 'upvote' %}upvote{% endif %}">
                         <a href="#" data-post-id="{{ post.id }}" id="upvote-href">
-                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                            <i class="fa fas fa-arrow-up" aria-hidden="true"></i>
                         </a>
                     </span>
                     <span id="vote-count">
@@ -48,7 +48,7 @@
                     </span>
                     <span id="downvote" class="{% if user_voted|get_value:post.id == 'downvote' %}downvote{% endif %}">
                         <a href="#" data-post-id="{{ post.id }}" id="downvote-href">
-                            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                            <i class="fa fas fa-arrow-down" aria-hidden="true"></i>
                         </a>
                     </span>
                     {% csrf_token %}
@@ -75,7 +75,7 @@
             </div>
         </div>
         <hr class="section-divider">
-        <script src="{% static 'article/script.js' %}"></script>
+        <!-- <script src="{% static 'article/script.js' %}"></script> -->
     </article>
     {% endfor%}
     {% if is_paginated and posts|length != 5 %}

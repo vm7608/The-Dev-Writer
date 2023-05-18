@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
-from post_app.models import SavePost
+from post_app.models import SavePost, Vote
 # Create your models here.
 
 
@@ -27,5 +27,14 @@ class Profile(models.Model):
     def get_saved_posts(self):
         temp = SavePost.objects.filter(user=self.user)
         saved_posts = [post.post for post in temp]
-        print(saved_posts)
         return saved_posts
+    
+    def get_upvoted_posts(self):
+        temp = Vote.objects.filter(user=self.user, vote_type='Upvote')
+        upvoted_posts = [post.post for post in temp]
+        return upvoted_posts
+    
+    def get_downvoted_posts(self):
+        temp = Vote.objects.filter(user=self.user, vote_type='Downvote')
+        downvoted_posts = [post.post for post in temp]
+        return downvoted_posts

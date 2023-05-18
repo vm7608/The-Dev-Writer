@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # My Apps
     'user_app',
     'post_app',
+    'post_app.templatetags',
 
     # Else
     'ckeditor',
@@ -155,6 +156,7 @@ if DEBUG:
       os.path.join(BASE_DIR, 'media/shared/'),
       os.path.join(BASE_DIR, 'tech_forum/static/'),
       os.path.join(BASE_DIR, 'user_app/static/'),
+      os.path.join(BASE_DIR, 'post_app/static/'),
       os.path.join(BASE_DIR, 'static')
   )
 else:

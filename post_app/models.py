@@ -24,6 +24,7 @@ class Post(models.Model):
         default='post_default.jpg', upload_to='post_pics')
     topic = models.ForeignKey(
         Topic, on_delete=models.CASCADE, null=True, blank=False)
+    vote_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -62,3 +63,26 @@ class SavePost(models.Model):
     date_saved = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.post.title
+    
+class Vote(models.Model) : 
+    UPVOTE = 'upvote'
+    DOWNVOTE = 'downvote'
+    VOTE_CHOICES = [
+        (UPVOTE, 'Upvote'),
+        (DOWNVOTE, 'Downvote'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    voted_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votes')
+    vote_type = models.CharField(max_length=10, choices=VOTE_CHOICES)
+
+    class Meta : 
+        unique_together = ('user', 'voted_post') 
+
+    def save(self, *args, **kwargs) : 
+        # Kiểm tra xem User đã vote Post này chưa
+        if self.pk is None and Vote.objects.filter(user=self.user, voted_post=self.voted_post).exists() : 
+            raise ValueError("User has already voted for this post.") 
+
+        super().save(*args, **kwargs)
+

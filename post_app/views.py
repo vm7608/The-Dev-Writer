@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Topic, Comment, SavePost
+from .models import Post, Topic, Comment, SavePost, Vote
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -31,10 +31,31 @@ class HomeListView(ListView):
                 title__icontains=keyword).order_by('-date_posted')
             context['topics'] = Topic.objects.all()
             messages.success(self.request, f"Search result of '{keyword}'")
+            # Get user vote for each post 
+            user_voted = {} 
+            if self.request.user.is_authenticated :
+                for post in context['posts'] : 
+                    try : 
+                        vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                        user_voted[post.id] = vote.vote_type
+                    except Vote.DoesNotExist : 
+                        pass
+            context['user_voted'] = user_voted
             return context
 
         context = super(HomeListView, self).get_context_data(**kwargs)
         context['topics'] = Topic.objects.all()
+	
+        # Get user vote for each post
+        user_voted = {}
+        if self.request.user.is_authenticated :
+            for post in context['posts'] :
+                try :
+                    vote = Vote.objects.get(user=self.request.user, voted_post=post)
+                    user_voted[post.id] = vote.vote_type
+                except Vote.DoesNotExist :
+                    pass
+        context['user_voted'] = user_voted
 
         return context
 
@@ -58,6 +79,16 @@ class MyPostListView(ListView):
                 title__icontains=keyword, author=user).order_by('-date_posted')
             context['topics'] = Topic.objects.all()
             messages.success(self.request, f"Search result of '{keyword}'")
+            # Get user vote for each post 
+            user_voted = {} 
+            if self.request.user.is_authenticated :
+                for post in context['posts'] : 
+                    try : 
+                        vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                        user_voted[post.id] = vote.vote_type
+                    except Vote.DoesNotExist : 
+                        pass
+            context['user_voted'] = user_voted
 
             return context
 
@@ -65,6 +96,18 @@ class MyPostListView(ListView):
         context['posts'] = Post.objects.filter(
             author=user).order_by('-date_posted')
         context['topics'] = Topic.objects.all()
+
+        # Get user vote for each post 
+        user_voted = {} 
+        if self.request.user.is_authenticated :
+            for post in context['posts'] : 
+                try : 
+                    vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                    user_voted[post.id] = vote.vote_type
+                except Vote.DoesNotExist : 
+                    pass
+        context['user_voted'] = user_voted
+
         return context
 
 class SavedPostListView(ListView):
@@ -87,12 +130,33 @@ class SavedPostListView(ListView):
             context['posts'] = [post.post for post in temp]
             context['topics'] = Topic.objects.all()
             messages.success(self.request, f"Search result of '{keyword}'")
+            # Get user vote for each post 
+            user_voted = {} 
+            if self.request.user.is_authenticated :
+                for post in context['posts'] : 
+                    try : 
+                        vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                        user_voted[post.id] = vote.vote_type
+                    except Vote.DoesNotExist : 
+                        pass
+            context['user_voted'] = user_voted
             return context
 
         context = super(SavedPostListView, self).get_context_data(**kwargs)
         temp = SavePost.objects.filter(user=user).order_by('-date_saved')
         context['posts'] = [post.post for post in temp]
         context['topics'] = Topic.objects.all()
+
+        # Get user vote for each post 
+        user_voted = {} 
+        if self.request.user.is_authenticated :
+            for post in context['posts'] : 
+                try : 
+                    vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                    user_voted[post.id] = vote.vote_type
+                except Vote.DoesNotExist : 
+                    pass
+        context['user_voted'] = user_voted
         return context
 
 
@@ -117,12 +181,33 @@ class UserPostListView(ListView):
                 author=user, title__icontains=keyword).order_by('-date_posted')
             context['topics'] = Topic.objects.all()
             messages.success(self.request, f"Search result of '{keyword}'")
+            # Get user vote for each post 
+            user_voted = {} 
+            if self.request.user.is_authenticated :
+                for post in context['posts'] : 
+                    try : 
+                        vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                        user_voted[post.id] = vote.vote_type
+                    except Vote.DoesNotExist : 
+                        pass
+            context['user_voted'] = user_voted
             return context
         
         context = super(UserPostListView, self).get_context_data(**kwargs)
         context['posts'] = Post.objects.filter(
             author=user).order_by('-date_posted')
         context['topics'] = Topic.objects.all()
+
+        # Get user vote for each post 
+        user_voted = {} 
+        if self.request.user.is_authenticated :
+            for post in context['posts'] : 
+                try : 
+                    vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                    user_voted[post.id] = vote.vote_type
+                except Vote.DoesNotExist : 
+                    pass
+        context['user_voted'] = user_voted
         return context
 
 
@@ -146,6 +231,16 @@ class TopicPostListView(ListView):
             context['topics'] = Topic.objects.all()
             context['selected_topic'] = selected_topic
             messages.success(self.request, f"Search result of '{keyword}'")
+            # Get user vote for each post 
+            user_voted = {} 
+            if self.request.user.is_authenticated :
+                for post in context['posts'] : 
+                    try : 
+                        vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                        user_voted[post.id] = vote.vote_type
+                    except Vote.DoesNotExist : 
+                        pass
+            context['user_voted'] = user_voted
             return context
         
         
@@ -154,6 +249,17 @@ class TopicPostListView(ListView):
         context['posts'] = Post.objects.filter(topic=selected_topic).order_by('-date_posted')
         context['topics'] = Topic.objects.all()
         context['selected_topic'] = selected_topic
+
+        # Get user vote for each post 
+        user_voted = {} 
+        if self.request.user.is_authenticated :
+            for post in context['posts'] : 
+                try : 
+                    vote = Vote.objects.get(user=self.request.user, voted_post=post) 
+                    user_voted[post.id] = vote.vote_type
+                except Vote.DoesNotExist : 
+                    pass
+        context['user_voted'] = user_voted
         return context
 
 
@@ -165,6 +271,17 @@ class PostDetailView(DetailView):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['topics'] = Topic.objects.all()
         # context['comments'] = self.get_comments()
+
+        user = self.request.user 
+        post = context['post']
+        user_voted = None 
+        if user.is_authenticated : 
+            try : 
+                vote =  Vote.objects.get(user=user, voted_post=post) 
+                user_voted = vote.vote_type 
+            except Vote.DoesNotExist : 
+                pass
+        context['user_voted'] = user_voted
         return context
 
     def get_comments(self):
@@ -270,3 +387,44 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['topics'] = Topic.objects.all()
         return context
+
+def upvote(request, pk) : 
+    post = Post.objects.get(pk=pk) 
+    vote, created = Vote.objects.get_or_create(user=request.user, voted_post=post)
+    print("upvoted")
+    if vote.vote_type == Vote.UPVOTE: 
+        # User da upvote truoc do, xoa upvote va giam vote_count
+        post.vote_count -= 1
+        vote.delete() 
+    else : 
+        # User chua upvote hoac da upvote, thuc hien upvote va tang vote_count
+        if vote.vote_type == Vote.DOWNVOTE : 
+            post.vote_count += 1
+        
+        post.vote_count += 1
+        vote.vote_type = Vote.UPVOTE
+        vote.save() 
+
+    post.save() 
+    return JsonResponse({'vote-count': post.vote_count}) 
+
+def downvote(request, pk) : 
+    post = Post.objects.get(pk=pk) 
+    vote, created = Vote.objects.get_or_create(user=request.user, voted_post=post)  
+    print("downvoted")
+    # print(vote.vote_type)
+    if vote.vote_type == Vote.DOWNVOTE :
+        # User da downvote truoc do, xoa downvote va tang vote_count
+        post.vote_count += 1
+        vote.delete() 
+    else : 
+        # User chua downvote hoac da upvote, thuc hien downvote va giam vote_count 
+        if vote.vote_type == vote.UPVOTE : 
+            # User da upvote truoc do, giam vote_count 
+            post.vote_count -= 1 
+        post.vote_count -= 1 
+        vote.vote_type = vote.DOWNVOTE 
+        vote.save() 
+    
+    post.save() 
+    return JsonResponse({'vote-count': post.vote_count}) 

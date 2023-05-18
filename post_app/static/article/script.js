@@ -1,10 +1,8 @@
-console.log("OK");
 const upvote = document.getElementById("upvote");
 const downvote = document.getElementById("downvote");
 const vote_count = document.getElementById("vote-count");
 const upvoteBtn = document.getElementById("upvote-href");
 const downvoteBtn = document.getElementById("downvote-href");
-console.log(upvote);
 
 function getCookie(name) {
   const cookieValue = document.cookie.match(
@@ -36,7 +34,6 @@ function vote_func(event, upvote) {
 }
 
 upvote.addEventListener("click", function (event) {
-    console.log("upvoted");
   if (
     !downvote.classList.contains("downvote") &&
     !upvote.classList.contains("upvote")

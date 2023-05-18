@@ -2,14 +2,15 @@
 
 This is a forum for developers and writers to discuss the latest technology and how it can be used to improve the world. Some common topic of forum discussions include: AI, Machine Learning, Algorithms, Data Science, Website development, Database and more.
 
-This project is built with Django and Python. It is a simple forum that allows users to create posts, comment on posts, like, dislike, and save posts.
+This project is built with Django and Python. It is a simple forum that allows users to add/edit/delete posts, comment on posts, reset password via email, upvote/downvote and save posts.
 
 ## Common features of the forum
 
+- Login/Sign up/Reset password
 - Write, edit, and delete posts
 - Comment on posts
-- Like, dislike, and save posts
-- Admin panel to manage users, posts, and comments using Jazzmin
+- Upvote, downvote and save posts
+- Admin panel to manage users, posts, topic and comments using Jazzmin
 
 ## How to run the project
 
@@ -25,6 +26,7 @@ You maybe change some settings in `settings.py` file to fit your needs.
 
 ## Contributors
 
-- vm7608
-- tuanhung7
-- tienhung36
+- Cao Kieu Van Manh (vm7608)
+- Nguyen Tuan Hung (tuanhung7)
+- Nguyen Tien Hung (tienhung36)
+- Nguyen Hoang Quan (stephenJoester)

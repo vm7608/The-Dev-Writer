@@ -47,6 +47,7 @@
                     <a href="{% url 'user-posts' post.author.username %}" class="ms-auto">{{ post.author }}</a>
                 </span>
                 <br>
+                {% if user.is_authenticated%}
                 <span class="vote-span">
                     <span id="upvote" class="{% if user_voted == 'upvote' %}upvote{% endif %}">
                         <a href="#" data-post-id="{{ post.id }}" id="upvote-href">
@@ -63,6 +64,14 @@
                     </span>
                     {% csrf_token %}
                 </span>
+                {% else %}
+                <span class="vote-span">
+                    <span id="vote-count">
+                    <b>Total points: {{ post.vote_count }}</b>
+                    </span>
+                    {% csrf_token %}
+                </span>
+                {% endif %}
             <script src="{% static 'article/script.js' %}"></script>
             </div>
             <div class="col-3 d-flex justify-content-end">
